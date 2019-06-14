@@ -1,0 +1,22 @@
+{
+  "name": "hapi-test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^18.3.1",
+    "@hapi/joi": "^15.0.3",
+    "blipp": "^4.0.0",
+    "boom": "^7.3.0",
+    "hapi-plugin-websocket": "^2.0.16",
+    "mongoose": "^5.5.14",
+    "sails-disk": "^1.1.2",
+    "shortid": "^2.2.14",
+    "waterline": "^0.13.6"
+  }
+}
