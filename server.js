@@ -11,8 +11,8 @@ async function start() {
         host: 'localhost'
     });
     
-    const db = require('./database').db;
-    
+    const db = require('./database').db();
+
     await server.register(HAPIWebSocket);
     await server.register({ plugin: Blipp });
         

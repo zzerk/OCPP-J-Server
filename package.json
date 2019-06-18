@@ -13,8 +13,10 @@
     "@hapi/joi": "^15.0.3",
     "blipp": "^4.0.0",
     "boom": "^7.3.0",
+    "eslint": "^5.16.0",
     "hapi-plugin-websocket": "^2.0.16",
     "mongoose": "^5.5.14",
+    "redis": "^2.8.0",
     "sails-disk": "^1.1.2",
     "shortid": "^2.2.14",
     "waterline": "^0.13.6"

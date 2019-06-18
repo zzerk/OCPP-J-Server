@@ -1,13 +1,8 @@
 'use strict';
 
-const ChargePoint = require('../models/chargepoint.js');
-const Ocpp        = require('../controllers/ocpp.js');
+const Ocpp = require('../controllers/ocpp');
+const Db   = require('../database');    
 
-
-async function findCP(cpid) {
-    var cp = await ChargePoint.findOne({cp_id:cpid}).exec();
-    return cp;
-}
 
 module.exports = [{
     path: '/ocpp/{cpid}',
@@ -19,27 +14,36 @@ module.exports = [{
                 initially: true,
                 subprotocol: 'ocpp1.6'
             }
+        },
+        payload: {
+            output: 'data',
+            parse: true,
+            defaultContentType: 'application/json'
         }
     },
-    handler: function(request, h) {
+    handler: async function(request, h) {
         var cpid = encodeURIComponent(request.params.cpid);
-        var resp = { };
-        
-        try {
-            var cp = findCP(cpid);
-            if (cp) {
-                if (request.payload) {
-                    resp=Ocpp.handleIncomingMessage(cp,request.payload);
+        var resp = null;
+        var cp   = null;
+        if(request.payload) {
+            console.log(`Message received from ${cpid}: ${request.payload}`);
+            try {
+                cp = await Db.findCP(cpid);
+                if (cp) {
+                    if (request.payload) {
+                        resp=await Ocpp.handleIncomingMessage(cp,request.payload);
+                        console.log('OCPP Handler response: '+resp);
+                        return resp
+                    }
+                }
+                else {
+                    console.log('Unknown ChargePoint: '+cpid);
                 }
             }
-            else {
-                console.log('Unknown ChargePoint: '+cpid);
+            catch (err) {
+                console.log('Error: '+err);
             }
         }
-        catch (err) {
-            console.log('Error: '+err);
-        }
-        console.log(resp);
-        return resp
+        return null;
     }
 }];

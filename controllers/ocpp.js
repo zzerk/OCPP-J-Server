@@ -1,13 +1,16 @@
 'use strict';
 
 const BootNotification = require('../controllers/BootNotification.js');
+const Cache = require('../cache');
 
-function handleCall(cp,id,action,payload) {
-    console.log(`CP ${cp.cp_id}: ${action}`);
+const cache = new Cache();
+
+async function handleCall(cp,id,action,payload) {
+    console.log(`HandleCall ${cp.cp_id}: ${action}`);
     var resp = null;
     switch(action) {
         case 'BootNotification':
-            resp = BootNotification.handleCall(cp,id,payload);
+            resp = await BootNotification.handleCall(cp,id,payload);
             break;
         default:
             resp = `[4,"${id}","NotImplemented",""]`;
@@ -26,7 +29,7 @@ function handleCallError(cp,id,errCode,errDesc,errDetails) {
     return null;
 }
 
-exports.handleIncomingMessage = function (cp,msg) {
+exports.handleIncomingMessage = async function (cp,msg) {
     const msgType   = msg[0];
     const msgId     = msg[1];
     var   msgPayload  = null;
@@ -39,11 +42,10 @@ exports.handleIncomingMessage = function (cp,msg) {
     switch (msgType) {
         case 2: // CALL
             msgAction = msg[2]; 
-            console.log(msg);
             if (msg.length > 2) {
                 msgPayload = msg[3];
             }
-            resp=handleCall(cp,msgId,msgAction,msgPayload);
+            resp=await handleCall(cp,msgId,msgAction,msgPayload);
             break;
             
         case 3: // CALLRESULT
